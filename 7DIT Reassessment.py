@@ -109,7 +109,7 @@ def admin_menu():
 
 
 def manage_team_menu():
-    """Display enu for second option on admin menu."""
+    """Display menu for second option on admin menu."""
     print("1. Add Team")
     print("2. Remove Team")
 
@@ -211,6 +211,9 @@ def starting_message():
 
 def main():
     """Start main code."""
+
+    starting_message()
+
     while True:
 
         admin_menu()
