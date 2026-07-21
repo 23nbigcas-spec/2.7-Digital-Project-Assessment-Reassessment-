@@ -16,7 +16,7 @@ def get_int():
 
             if num < 0:
                 print("This cannot be negative, try again.")
-            elif num >= MAX_VALUE:
+            elif num > MAX_VALUE:
                 print("Number is Too high, please use a reasonable number.")
             else:
                 return num
