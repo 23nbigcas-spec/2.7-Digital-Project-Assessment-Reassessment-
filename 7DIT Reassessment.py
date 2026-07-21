@@ -28,7 +28,8 @@ standings = [{"Team": "WAKATIPU", "P": 0, "W": 0, "L": 0, "D": 0, "PTS": 0},
 
 def print_standings():
     """Display the list called standings."""
-    print(*standings, sep="\n")
+    for i in standings:
+        print(" ".join(f"|{k}: {v}|" for k, v in i.items()))
 
 
 def enter_team():
@@ -59,7 +60,9 @@ def enter_team():
     standings.append(
         {"Team": team_name, "P": 0, "W": 0, "L": 0, "D": 0, "PTS": 0}
         )
-    print(*standings, sep="\n")
+    print("NEW TEAM LIST")
+    print("-" * 15)
+    print_standings()
 
 
 def view_teams():
@@ -195,6 +198,9 @@ def reset_standings():
 
 
 while True:
+    print("=" * 15)
+    print(" WELCOME to NHICO's SPORTS STANDING TRACKER")
+    print("=" * 15)
     admin_menu()
 
     admin_choice = get_int()
