@@ -43,13 +43,13 @@ def enter_team():
             "\nWhat is the team name you would like to add?: "
             ).strip().upper()
 
-        if len(team_name) < 15:
-            break
-        else:
+        if len(team_name) > 15:
             print("\n Team name is too long, please shorten")
+            continue
 
         if not team_name:
             print("\nTeam name cannot be blank.")
+            continue
 
         duplicate = False
         for teams in standings:
@@ -59,6 +59,7 @@ def enter_team():
         if duplicate:
             print("That team exists, please enter an original team.")
             continue
+
         break
 
     standings.append(
