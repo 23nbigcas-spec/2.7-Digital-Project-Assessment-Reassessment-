@@ -5,6 +5,8 @@ My program aims to helps sort out the different wins and losses each team has.
 And shows them in a aesthetically pleasing manner.
 """
 
+MAX_VALUE = 10
+
 
 def get_int():
     """Prompt user for a value, value must be positive."""
@@ -14,6 +16,8 @@ def get_int():
 
             if num < 0:
                 print("This cannot be negative, try again.")
+            elif num >= MAX_VALUE:
+                print("Number is Too high, please use a reasonable number.")
             else:
                 return num
         except ValueError:
@@ -70,7 +74,7 @@ def view_teams():
     print(f'\n{"TEAMS":<10}')
     print("-" * 15)
     for i in range(len(standings)):
-        print('\n {i + 1}. {standings[i]["Team"]}')
+        print(f'\n {i + 1}. {standings[i]["Team"]}')
 
 
 def remove_team():
@@ -197,39 +201,49 @@ def reset_standings():
     print("\nSTANDINGS RESET")
 
 
-while True:
+def starting_message():
+    """Kind message to start programme."""
     print("=" * 15)
     print(" WELCOME to NHICO's SPORTS STANDING TRACKER")
     print("=" * 15)
-    admin_menu()
 
-    admin_choice = get_int()
 
-    if admin_choice == 1:
-        record_game()
+def main():
+    """Start main code."""
+    while True:
 
-    elif admin_choice == 2:
-        manage_team_menu()
-        manage_choice = get_int()
-        if manage_choice == 1:
-            enter_team()
-        elif manage_choice == 2:
-            remove_team()
+        admin_menu()
+
+        admin_choice = get_int()
+
+        if admin_choice == 1:
+            record_game()
+
+        elif admin_choice == 2:
+            manage_team_menu()
+            manage_choice = get_int()
+            if manage_choice == 1:
+                enter_team()
+            elif manage_choice == 2:
+                remove_team()
+            else:
+                print("\nInvalid option, try again.")
+
+        elif admin_choice == 3:
+            print_standings()
+
+        elif admin_choice == 4:
+            view_teams()
+
+        elif admin_choice == 5:
+            reset_standings()
+
+        elif admin_choice == 6:
+            print("Thank you for using our service.")
+            break
+
         else:
-            print("\nInvalid option, try again.")
+            print("INVALID OPTION, TRY AGAIN")
 
-    elif admin_choice == 3:
-        print_standings()
 
-    elif admin_choice == 4:
-        view_teams()
-
-    elif admin_choice == 5:
-        reset_standings()
-
-    elif admin_choice == 6:
-        print("Thank you for using our service.")
-        break
-
-    else:
-        print("INVALID OPTION, TRY AGAIN")
+main()
