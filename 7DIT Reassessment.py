@@ -7,59 +7,90 @@ And shows them in a aesthetically pleasing manner.
 
 
 def get_int():
-    """A function for whenever an integer is needed."""
+    """Prompt user for a value, value must be positive."""
     while True:
         try:
             num = int(input("\nEnter Here: "))
-            return num
+
+            if num < 0:
+                print("This cannot be negative, try again.")
+            else:
+                return num
         except ValueError:
             print("Invalid Input, Try again.")
 
 
-standings = [{"Team": "Wakatipu", "P": 0, "W": 0, "L": 0, "D": 0, "PTS": 0},
-             {"Team": "Lakes waves", "P": 0, "W": 0, "L": 0, "D": 0, "PTS": 0},
-             {"Team": "Cromwell", "P": 0, "W": 0, "L": 0, "D": 0, "PTS": 0},
-             {"Team": "Mac", "P": 0, "W": 0, "L": 0, "D": 0, "PTS": 0}]
+standings = [{"Team": "WAKATIPU", "P": 0, "W": 0, "L": 0, "D": 0, "PTS": 0},
+             {"Team": "LAKES WAVES", "P": 0, "W": 0, "L": 0, "D": 0, "PTS": 0},
+             {"Team": "CROMWELL", "P": 0, "W": 0, "L": 0, "D": 0, "PTS": 0},
+             {"Team": "MAC", "P": 0, "W": 0, "L": 0, "D": 0, "PTS": 0}]
 
 
 def print_standings():
-    """Prints the list called standings, and makes it look nice and ordered."""
+    """Display the list called standings."""
     print(*standings, sep="\n")
 
 
 def enter_team():
-    """Has the user enter a team and inserts it into the list of teams."""
-    team_name = input("\nWhat is the team name you would like to add?: ").strip().capitalize()
-    standings.append({"Team": team_name, "P": 0, "W": 0, "L": 0, "D": 0, "PTS": 0})
+    """Enter a team name, make sure it is unique and add it to the league."""
+    while True:
+        team_name = input(
+            "\nWhat is the team name you would like to add?: "
+            ).strip().upper()
+
+        if len(team_name) < 15:
+            break
+        else:
+            print("\n Team name is too long, please shorten")
+
+        if not team_name:
+            print("\nTeam name cannot be blank.")
+
+        duplicate = False
+        for teams in standings:
+            if teams["Team"] == team_name:
+                duplicate = True
+
+        if duplicate:
+            print("That team exists, please enter an original team.")
+            continue
+        break
+
+    standings.append(
+        {"Team": team_name, "P": 0, "W": 0, "L": 0, "D": 0, "PTS": 0}
+        )
     print(*standings, sep="\n")
 
 
-def remove_team():
-    """Has user enter a team and functions searches for it in list using the key Team, as a way to search."""
-    team_name = input("\nWhat is the team name you would like to remove?: ").strip().capitalize()
-
-    try:
-        for i in range(len(standings)):
-            if standings[i]["Team"] == team_name:
-                standings.pop(i)
-                break
-
-        print(*standings, sep="\n")
-
-    except ValueError:
-        print("Invalid Input, Try again.")
-
-
 def view_teams():
-    """Searches for all of the information in each dictonary under the key Teams, and prints it out."""
-    print(f'{"TEAMS":<10}')
-    print("--------------------")
+    """Print a numbered list of all the registered teams."""
+    print(f'\n{"TEAMS":<10}')
+    print("-" * 15)
     for i in range(len(standings)):
-        print(f'{standings[i]["Team"]}')
+        print('\n {i + 1}. {standings[i]["Team"]}')
+
+
+def remove_team():
+    """Remove a specific team from standings, if it exists."""
+    view_teams()
+    team_name = input(
+        "\nWhat is the name of the team you would like to remove?: "
+        ).strip().upper()
+
+    check = False
+    for i in range(len(standings)):
+        if standings[i]["Team"] == team_name:
+            standings.pop(i)
+            print(f"\n{team_name} removed.")
+            check = True
+            break
+
+    if not check:
+        print("\nInvalid removal, please enter a proper team name.")
 
 
 def admin_menu():
-    """Prints all options for user in menu."""
+    """Display all options for user in menu."""
     print("\n---ADMIN MENU---")
     print("1. Enter match result ")
     print("2. Manage team lists")
@@ -70,16 +101,13 @@ def admin_menu():
 
 
 def manage_team_menu():
-    """Menu for second option on admin menu."""
+    """Display enu for second option on admin menu."""
     print("1. Add Team")
     print("2. Remove Team")
 
 
 def update_standings(team_name, result):
-    """Uses the parameters and looks at the key Team.
-
-    If team is same as team_name then it changes the information stored in the key.
-    """
+    """Update match statistics, and give respective points."""
     for row in standings:
         if row["Team"] == team_name:
             row["P"] += 1
@@ -88,23 +116,29 @@ def update_standings(team_name, result):
                 row["W"] += 1
                 row["PTS"] += 3
             elif result == "D":
-                row["W"] += 1
+                row["D"] += 1
                 row["PTS"] += 1
             elif result == "L":
                 row["L"] += 1
 
 
 def record_game():
-    """Gets user to choose 2 teams from key Teams, and gets the points scored from game.
-
-    It has different points depending on wins/losses and changes different parts of keys"""
+    """Record scores from 2 teams and update standings."""
     active_teams = []
     for i in range(len(standings)):
         active_teams.append(standings[i]["Team"])
     print("Team options")
-    print(*active_teams)
+    print("=" * 15)
+    print(*active_teams, sep="\n")
+
+    if len(active_teams) < 2:
+        print("\n2 teams must be in the league in order to record a game")
+        return
+
     while True:
-        home_team = input("\nWhat is the first team in this match?: ").strip().capitalize()
+        home_team = input(
+            "\nWhat is the first team in this match?: "
+            ).strip().upper()
 
         if home_team in active_teams:
             print(f"{home_team} is available for this game")
@@ -113,13 +147,18 @@ def record_game():
             print("invalid team name entered")
 
     while True:
-        away_team = input("\nWhat is the second team in this match?: ").strip().capitalize()
+        away_team = input(
+            "\nWhat is the second team in this match?: "
+            ).strip().upper()
 
         if away_team in active_teams and away_team != home_team:
             print(f"{away_team} is available for this game")
             break
         else:
-            print("invalid team name entered, team must be in list and not the same as home team.")
+            print(
+                "invalid team name entered,"
+                "team must be in list and not the same as home team."
+                )
 
     print(f"{home_team} VS {away_team}")
 
@@ -144,7 +183,7 @@ def record_game():
 
 
 def reset_standings():
-    """Gets all keys and resets them to 0."""
+    """Reset all team statistics to 0."""
     for i in range(len(standings)):
         standings[i]["W"] = 0
         standings[i]["P"] = 0
@@ -156,7 +195,6 @@ def reset_standings():
 
 
 while True:
-    """Main code"""
     admin_menu()
 
     admin_choice = get_int()
@@ -171,10 +209,12 @@ while True:
             enter_team()
         elif manage_choice == 2:
             remove_team()
+        else:
+            print("\nInvalid option, try again.")
 
     elif admin_choice == 3:
         print_standings()
-    
+
     elif admin_choice == 4:
         view_teams()
 
@@ -184,3 +224,6 @@ while True:
     elif admin_choice == 6:
         print("Thank you for using our service.")
         break
+
+    else:
+        print("INVALID OPTION, TRY AGAIN")
